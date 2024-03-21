@@ -15,6 +15,18 @@ const Users = [
 
 const app = express();
 
+app.use((req, res, next) => {
+  const start = Date.now();
+  console.log(`start: ${req.method}, ${req.url}`);
+  next();
+  const diffTime = Date.now() - start;
+  console.log(`end: ${req.method} ${req.url} ${diffTime}ms`);
+});
+
+app.get("/", (req, res) => {
+  res.send("Hello, world");
+});
+
 app.get("/users", (req, res) => {
   res.send(Users);
 });
