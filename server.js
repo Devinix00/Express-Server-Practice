@@ -2,17 +2,24 @@ const http = require("http");
 
 const PORT = 8080;
 
+const targetObject = { a: "a", b: "b" };
+
 const server = http.createServer((req, res) => {
-  switch (req.url) {
-    case "/":
+  if (req.method === "POST" && req.url === "/") {
+    req.on("data", (data) => {
+      console.log(data);
+      const stringfiedData = data.toString();
+      console.log(stringfiedData);
+      Object.assign(targetObject, JSON.parse(stringfiedData));
+    });
+  } else {
+    if (req.url === "/") {
       res.writeHead(200, {
         "Content-Type": "application/json",
       });
-      res.write("Home");
+      res.write(JSON.stringify(targetObject));
       res.end();
-      break;
-
-    case "/about":
+    } else if (req.url === "/about") {
       res.writeHead(200, {
         "Content-Type": "text/html",
       });
@@ -22,13 +29,16 @@ const server = http.createServer((req, res) => {
       res.write("</body>");
       res.write("</html>");
       res.end();
-      break;
-
-    default:
+    } else {
       res.writeHead(404);
       res.end();
-      break;
+    }
   }
+});
+
+fetch("http://localhost:8080", {
+  method: "POST",
+  body: JSON.stringify({ c: "c" }),
 });
 
 server.listen(PORT, () => {
