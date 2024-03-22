@@ -1,10 +1,13 @@
 const express = require("express");
 const usersRouter = require("./routes/users.router");
 const postsRouter = require("./routes/posts.router");
+const path = require("path");
 
 const PORT = 8080;
 
 const app = express();
+
+app.use("/static", express.static(path.join(__dirname, "public")));
 
 app.use(express.json());
 app.use((req, _res, next) => {
